@@ -118,12 +118,22 @@ function optimize_npp(xout,outmask,vars,varmask)
     end
     getNPPtot(topt)=npp_loop(gvars,topt)
     o=optimize(getNPPtot,0.0,40.0)
-    if Optim.converged(o) && Optim.minimizer(o)<39.0 && Optim.minimizer(o)>1.0
-        xout[1]=Optim.minimizer(o)
-        outmask[1]=CABLAB.CubeAPI.VALID
+    if Optim.converged(o)
+        if Optim.minimizer(o)<39.0 
+            if Optim.minimizer(o)>1.0
+                xout[1]=Optim.minimizer(o)
+                outmask[1]=CABLAB.CubeAPI.VALID
+            else
+                xout[1]=3
+                outmask[1]=CABLAB.CubeAPI.VALID
+            end
+        else
+            xout[1]=2
+            outmask[1]=CABLAB.CubeAPI.VALID
+        end
     else
-        xout[1]=NaN
-        outmask[1]=CABLAB.CubeAPI.MISSING
+         xout[1]=1
+         outmask[1]=CABLAB.CubeAPI.VALID
     end
 end
 
